@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン - AI投稿監視掲示板{% endblock %}
+
+{% block content %}
+
+<div class="login-card">
+    <h1>ログイン</h1>
+
+    <p class="description">
+        ユーザー名とパスワードを入力してください。
+    </p>
+
+    <form method="POST" action="{{ url_for('login') }}">
+
+        <label for="username">ユーザー名</label>
+        <input
+            id="username"
+            name="username"
+            type="text"
+            required
+        >
+
+        <label for="password">パスワード</label>
+        <input
+            id="password"
+            name="password"
+            type="password"
+            required
+        >
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <button class="btn primary full" type="submit">
+            ログイン
+        </button>
+
+    </form>
+
+    <div class="login-help">
+        <p>アカウントをお持ちでない場合</p>
+
+        <a href="{{ url_for('register') }}">
+            新規ユーザー登録
+        </a>
+    </div>
+</div>
+
+{% endblock %}

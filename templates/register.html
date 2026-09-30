@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}登録 - AI投稿監視掲示板{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+    <h1>新規ユーザー登録</h1>
+
+<form method="POST" action="{{ url_for('register') }}">
+    <label for="username">ユーザー名</label>
+    <input
+        id="username"
+        name="username"
+        type="text"
+        maxlength="30"
+        required
+    >
+
+    <label for="password">パスワード</label>
+    <input
+        id="password"
+        name="password"
+        type="password"
+        minlength="8"
+        required
+    >
+
+    <label for="confirm_password">パスワード（確認）</label>
+    <input
+        id="confirm_password"
+        name="confirm_password"
+        type="password"
+        minlength="8"
+        required
+    >
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <div class="actions">
+        <a href="{{ url_for('login') }}" class="btn secondary">
+            戻る
+        </a>
+
+        <button type="submit" class="btn primary">
+            登録する
+        </button>
+    </div>
+</form>
+
+</div>
+
+{% endblock %}

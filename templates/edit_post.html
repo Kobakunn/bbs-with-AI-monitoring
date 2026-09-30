@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}投稿修正 - AI投稿監視掲示板{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+    <h1>投稿修正</h1>
+
+    <form id="edit-form" method="POST" action="{{ url_for('edit_post', post_id=post['id']) }}">
+
+        <label for="content">投稿内容</label>
+
+        <textarea
+            id="edit-content"
+            name="content"
+            rows="8"
+            maxlength="500"
+            required
+        >{{ post["content"] }}</textarea>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{{ url_for('posts') }}" class="btn secondary">
+                戻る
+            </a>
+
+            <button type="submit" class="btn primary">
+                修正する
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

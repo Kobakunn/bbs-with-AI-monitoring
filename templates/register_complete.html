@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}登録完了 - AI投稿監視掲示板{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+    <h1>登録完了</h1>
+
+<p>ユーザー登録が完了しました。</p>
+<p>登録したユーザー名：{{ username }}</p>
+
+<div class="actions">
+    <a href="{{ url_for('login') }}" class="btn primary">
+        ログイン画面へ
+    </a>
+</div>
+
+</div>
+
+{% endblock %}

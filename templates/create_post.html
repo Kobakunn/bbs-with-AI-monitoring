@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}新規投稿 - AI投稿監視掲示板{% endblock %}
+
+{% block content %}
+
+<div class="form-card">
+    <h1>新規投稿</h1>
+
+    <form id="create-form" method="POST" action="{{ url_for('create_post') }}">
+
+        <label for="content">投稿内容</label>
+
+        <textarea
+            id="edit-content"
+            name="content"
+            rows="8"
+            maxlength="500"
+            required
+            placeholder="投稿内容を入力してください"
+        ></textarea>
+
+        <div class="counter"><span id="edit-count">0</span> / 500</div>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{{ url_for('posts') }}" class="btn secondary">
+                戻る
+            </a>
+
+            <button type="submit" class="btn primary">
+                投稿する
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}

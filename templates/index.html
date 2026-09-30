@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI投稿監視掲示板</title>
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="#" data-screen="list">AI投稿監視掲示板</a>
+    <div class="header-right">
+      <span id="current-user"></span>
+      <button id="logout-btn" class="logout-btn">ログアウト</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+<section id="screen-login" class="screen active">
+  <div class="login-card">
+    <h1>ログイン</h1>
+    <p class="description">ユーザー名とパスワードを入力してください。</p>
+    <form id="login-form">
+      <label for="login-username">ユーザー名</label>
+      <input id="login-username" type="text" autocomplete="username" required>
+      <label for="login-password">パスワード</label>
+      <input id="login-password" type="password" autocomplete="current-password" required>
+      <p id="login-error" class="error"></p>
+      <button class="btn primary full" type="submit">ログイン</button>
+    </form>
+    <div class="login-help">
+      <p>アカウントをお持ちでない場合</p>
+      <button class="link-btn" data-screen="register">新規ユーザー登録</button>
+    </div>
+    <div class="demo">
+      <strong>モック用アカウント</strong>
+      <span>ユーザー名：kobayashi</span>
+      <span>パスワード：password</span>
+    </div>
+  </div>
+</section>
+
+<section id="screen-register" class="screen">
+  <div class="form-card">
+    <h1>新規ユーザー登録</h1>
+    <form id="register-form">
+      <label>ユーザー名</label>
+      <input id="register-username" type="text" maxlength="30" required>
+      <label>パスワード</label>
+      <input id="register-password" type="password" minlength="8" required>
+      <label>パスワード（確認）</label>
+      <input id="register-confirm" type="password" minlength="8" required>
+      <p id="register-error" class="error"></p>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-screen="login">戻る</button>
+        <button type="submit" class="btn primary">登録する</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="screen-list" class="screen">
+  <div class="page-heading">
+    <div>
+      <h1>投稿一覧</h1>
+      <p class="subtitle">ログイン中：<strong id="list-user"></strong></p>
+    </div>
+    <button class="btn primary" data-screen="create">✎ 新しく投稿する</button>
+  </div>
+  <div id="post-list" class="post-list"></div>
+  <div class="pagination"><button disabled>‹</button><button class="active">1</button><button>2</button><button>3</button><button>›</button></div>
+</section>
+
+<section id="screen-create" class="screen">
+  <div class="form-card">
+    <h1>新規投稿</h1>
+    <form id="create-form">
+      <label>名前</label>
+      <input id="create-name" type="text" maxlength="30" required>
+      <label>投稿内容</label>
+      <textarea id="create-content" maxlength="500" required></textarea>
+      <div class="counter"><span id="create-count">0</span> / 500</div>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-screen="list">戻る</button>
+        <button type="submit" class="btn primary">投稿する</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="screen-edit" class="screen">
+  <div class="form-card">
+    <h1>投稿の修正</h1>
+    <form id="edit-form">
+      <label>名前</label>
+      <input id="edit-name" type="text" maxlength="30" required>
+      <label>投稿内容</label>
+      <textarea id="edit-content" maxlength="500" required></textarea>
+      <div class="counter"><span id="edit-count">0</span> / 500</div>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-screen="list">戻る</button>
+        <button type="submit" class="btn primary">修正する</button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="screen-delete" class="screen">
+  <div class="confirm-card">
+    <div class="warning">!</div>
+    <h1>投稿を削除しますか？</h1>
+    <p>この投稿を削除すると、元に戻すことはできません。</p>
+    <div class="actions">
+      <button class="btn secondary" data-screen="list">キャンセル</button>
+      <button id="confirm-delete" class="btn danger">削除</button>
+    </div>
+  </div>
+</section>
+
+<section id="screen-complete" class="screen">
+  <div class="complete-card">
+    <div class="success">✓</div>
+    <h1>投稿が完了しました！</h1>
+    <p>ご投稿ありがとうございます。</p>
+    <button class="btn primary" data-screen="list">投稿一覧へ</button>
+  </div>
+</section>
+</main>
+<script src="../static/js/script.js"></script>
+</body>
+</html>

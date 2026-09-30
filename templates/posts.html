@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}投稿一覧 - AI投稿監視掲示板{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1>投稿一覧</h1>
+        <p>ログイン中：<strong>{{ session["username"] }}</strong></p>
+    </div>
+
+    <div class="header-actions">
+        <a href="{{ url_for('logout') }}" class="btn secondary">
+            ログアウト
+        </a>
+
+        <a href="{{ url_for('create_post') }}" class="btn primary">
+            ✎ 新しく投稿する
+        </a>
+    </div>
+
+</div>
+
+
+<div class="post-list">
+
+    {% for post in posts %}
+
+        <div class="post-card">
+
+            <div class="post-header">
+                <div>
+                    <strong>
+                        名前：{{ post["username"] }}
+                    </strong>
+                </div>
+
+                <span class="post-date">
+                    投稿日時：{{ post["created_at"] }}
+                </span>
+            </div>
+
+            <p class="post-content">{{ post["content"] }}</p>
+
+            {% if post["user_id"] == session["user_id"] %}
+
+                <div class="post-actions">
+                    <a href="{{ url_for('edit_post', post_id=post['id']) }}" class="btn primary">
+                        修正
+                    </a>
+
+                    <a href="{{ url_for('delete_post', post_id=post['id']) }}" class="btn danger">
+                        削除
+                    </a>
+                </div>
+
+            {% else %}
+
+                <div class="other-user-post">
+                    他ユーザーの投稿
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- ページネーション -->
+{% if total_pages > 1 %}
+    <div class="pagination">
+
+        {% if page > 1 %}
+            <a
+                href="{{ url_for('posts', page=page - 1) }}"
+                class="page-button"
+            >
+                ‹
+            </a>
+        {% endif %}
+
+        {% for page_number in range(1, total_pages + 1) %}
+            <a
+                href="{{ url_for('posts', page=page_number) }}"
+                class="page-button {% if page_number == page %}active{% endif %}"
+            >
+                {{ page_number }}
+            </a>
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a
+                href="{{ url_for('posts', page=page + 1) }}"
+                class="page-button"
+            >
+                ›
+            </a>
+        {% endif %}
+
+    </div>
+{% endif %}
+
+{% endblock %}
