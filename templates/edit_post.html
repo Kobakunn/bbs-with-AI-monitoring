@@ -2,6 +2,13 @@
 
 {% block title %}投稿修正 - AI投稿監視掲示板{% endblock %}
 
+{% block header %}
+<div class="header-right">
+    {{ session["username"] }} さん
+    <a href="{{ url_for('logout') }}" id="logout-btn" class="logout-btn">ログアウト</a>
+</div>
+{% endblock %}
+
 {% block content %}
 
 <div class="form-card">

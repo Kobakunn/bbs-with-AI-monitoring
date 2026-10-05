@@ -13,11 +13,9 @@
 
 <header class="site-header">
     <div class="header-inner">
-    <a class="logo" href="#" data-screen="list">AI投稿監視掲示板</a>
-    <div class="header-right">
-      <span id="current-user"></span>
-      <button id="logout-btn" class="logout-btn">ログアウト</button>
-    </div>
+    <a class="logo" href="{{ url_for('posts') }}" data-screen="list">AI投稿監視掲示板</a>
+    {% block header%}
+    {% endblock %}
   </div>
 </header>
 
@@ -28,7 +26,7 @@
 
 </main>
 
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="../static/js/script.js"></script>
 
 </body>
 </html>

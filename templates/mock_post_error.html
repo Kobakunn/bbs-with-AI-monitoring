@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI投稿監視掲示板</title>
+<link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="logo" href="#" data-screen="list">AI投稿監視掲示板</a>
+    <div class="header-right">
+      <span id="current-user"></span>
+      <button id="logout-btn" class="logout-btn">ログアウト</button>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+<div class="confirm-card">
+    <div class="warning">!</div>
+
+    <h1>投稿内容を確認してください</h1>
+
+    <p>
+        投稿内容に不適切な表現が含まれている可能性があります。
+    </p>
+
+    <div class="post-preview">
+        <p>{{ content }}</p>
+    </div>
+
+    <div class="actions">
+        <a href="{{ url_for('create_post') }}" class="btn secondary">
+            投稿内容を修正する
+        </a>
+
+        <a href="{{ url_for('posts') }}" class="btn primary">
+            投稿一覧へ
+        </a>
+    </div>
+</div>
+</main>
+<script src="../static/js/script.js"></script>
+</body>
+</html>
