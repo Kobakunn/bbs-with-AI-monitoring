@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}投稿エラー - AI投稿監視掲示板{% endblock %}
+
+{% block header %}
+<div class="header-right">
+    {{ session["username"] }} さん
+    <a href="{{ url_for('logout') }}" id="logout-btn" class="logout-btn">ログアウト</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<main class="container">
+<div class="confirm-card">
+    <div class="warning">!</div>
+
+    {% if from_edit %}
+        <h1>修正内容を確認してください</h1>
+    {% else %}
+        <h1>投稿内容を確認してください</h1>
+    {% endif %}
+
+    {% if from_edit %}
+        <p>
+            修正内容に不適切な表現が含まれている可能性があります。
+        </p>
+    {% else %}
+        <p>
+            投稿内容に不適切な表現が含まれている可能性があります。
+        </p>
+    {% endif %}
+
+    <div class="post-preview">
+        <p>{{ content }}</p>
+    </div>
+
+    {% if probability is defined %}
+        <p>
+            有害クラスの予測確率：
+            {{ probability }}%
+        </p>
+    {% endif %}
+
+    <div class="actions">
+        {% if from_edit %}
+            <a href="{{ url_for('edit_post', post_id=post_id) }}" class="btn secondary">
+                もう一度修正する
+            </a>
+        {% else %}
+            <a href="{{ url_for('create_post') }}" class="btn secondary">
+                投稿内容を修正する
+            </a>
+        {% endif %}
+
+        <a href="{{ url_for('posts') }}" class="btn primary">
+            投稿一覧へ
+        </a>
+    </div>
+</div>
+{% endblock %}

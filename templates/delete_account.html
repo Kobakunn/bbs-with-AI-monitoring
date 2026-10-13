@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}アカウント削除 - AI投稿監視掲示板{% endblock %}
+
+{% block header %}
+<div class="header-right">
+    {{ session["username"] }} さん
+    <a href="{{ url_for('logout') }}" id="logout-btn" class="logout-btn">ログアウト</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<div class="confirm-card">
+    <div class="warning">!</div>
+
+    <h1>アカウントを削除しますか？</h1>
+    
+    <h4>アカウントを削除すると、元に戻すことはできません。</h4>
+    
+    <form method="POST" action="{{ url_for('delete_account') }}">
+
+        <div class="actions">
+            <a href="{{ url_for('edit_account') }}" class="btn secondary">
+                キャンセル
+            </a>
+
+            <button type="submit" class="btn danger">
+                アカウントを削除
+            </button>
+        </div>
+
+    </form>
+</div>
+
+{% endblock %}
