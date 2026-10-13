@@ -5,6 +5,8 @@ import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
+from moderation_model import predict_toxicity
+
 app = Flask(__name__)
 
 app.secret_key = "dev-secret-key"
@@ -245,6 +247,7 @@ def posts():
     ).fetchall()
 
     connection.close()
+    print("投稿データを取得しました。")
 
     # ページ数を計算
     total_pages = (total_count + per_page - 1) // per_page
@@ -273,6 +276,20 @@ def create_post():
                 error="投稿内容を入力してください。"
             )
 
+        # ① 学習済みモデルで投稿内容を判定
+        result = predict_toxicity(content)
+
+        # ② 有害と判定されたら保存しない
+        if result["is_toxic"]:
+            return render_template(
+                "warning.html",
+                message="不適切な表現が含まれている可能性があります。",
+                probability=round(
+                    result["toxic_probability"] * 100, 1
+                ),
+                from_edit=False
+            )
+
         # 現在日時
         now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
 
@@ -299,6 +316,8 @@ def create_post():
         connection.commit()
         connection.close()
 
+        # ③ ここに既存の投稿保存処理を置く
+        # 例：投稿者、投稿内容、投稿日時をDBに保存する
         # 投稿一覧へ戻る
         return redirect(url_for("posts"))
 
@@ -343,6 +362,21 @@ def edit_post(post_id):
                 "edit_post.html",
                 post=post,
                 error="投稿内容を入力してください。"
+            )
+
+        # ① 学習済みモデルで投稿内容を判定
+        result = predict_toxicity(content)
+        
+        # ② 有害と判定されたら保存しない
+        if result["is_toxic"]:
+            return render_template(
+                "warning.html",
+                message="不適切な表現が含まれている可能性があります。",
+                probability=round(
+                    result["toxic_probability"] * 100, 1
+                ),
+                from_edit=True,
+                post_id=post_id
             )
 
         now = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
@@ -419,6 +453,73 @@ def delete_post(post_id):
     connection.close()
 
     return redirect(url_for("posts"))
+
+
+@app.route("/account", methods=["GET", "POST"])
+def edit_account():
+    # ログインチェック
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    return render_template("edit_account.html")
+
+
+@app.route("/account/delete", methods=["GET", "POST"])
+def delete_account():
+    # ログインチェック
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+    connection = get_db_connection()
+
+    # 現在ログインしているユーザーを取得
+    user = connection.execute(
+        """
+        SELECT id, username
+        FROM users
+        WHERE id = ?
+        """,
+        (user_id,)
+    ).fetchone()
+
+    if user is None:
+        connection.close()
+        session.clear()
+        return redirect(url_for("login"))
+
+    # GET → 削除確認画面
+    if request.method == "GET":
+        connection.close()
+        return render_template(
+            "delete_account.html",
+            user=user
+        )
+
+    # POST → ユーザーの投稿を削除
+    connection.execute(
+        """
+        DELETE FROM posts
+        WHERE user_id = ?
+        """,
+        (user_id,)
+    )
+
+    # POST → ユーザー自身を削除
+    connection.execute(
+        """
+        DELETE FROM users
+        WHERE id = ?
+        """,
+        (user_id,)
+    )
+
+    connection.commit()
+    connection.close()
+
+    # ログアウトしてログイン画面へ
+    session.clear()
+    return redirect(url_for("login"))
 
 
 @app.route("/logout")
