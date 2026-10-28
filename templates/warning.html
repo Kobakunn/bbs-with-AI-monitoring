@@ -21,25 +21,17 @@
         <h1>投稿内容を確認してください</h1>
     {% endif %}
 
-    {% if from_edit %}
-        <p>
-            修正内容に不適切な表現が含まれている可能性があります。
-        </p>
-    {% else %}
-        <p>
-            投稿内容に不適切な表現が含まれている可能性があります。
-        </p>
-    {% endif %}
-
-    <div class="post-preview">
-        <p>{{ content }}</p>
-    </div>
-
-    {% if probability is defined %}
-        <p>
-            有害クラスの予測確率：
-            {{ probability }}%
-        </p>
+    {% if categories %}
+        <div class="detected-categories">
+            {% for category in categories %}
+                以下の内容は{{ category }}に該当します。
+                <div class="post-preview">
+                    <p>{{ content }}</p>
+                </div>
+                （予測確率：
+                {{ category_probabilities[category] }}%）
+            {% endfor %}
+        </div>
     {% endif %}
 
     <div class="actions">

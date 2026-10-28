@@ -19,6 +19,7 @@
     </div>
 
     <div class="header-actions">
+        <a href="{{ url_for('edit_account') }}" class="btn secondary">アカウント設定</a>
         <a href="{{ url_for('create_post') }}" class="btn primary">
             ✎ 新しく投稿する
         </a>
@@ -110,9 +111,5 @@
 
     </div>
 {% endif %}
-
-<div style="text-align: right;">
-    <a href="{{ url_for('edit_account') }}">アカウント設定</a>
-</div>
 
 {% endblock %}
