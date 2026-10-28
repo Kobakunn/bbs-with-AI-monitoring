@@ -279,14 +279,30 @@ def create_post():
         # ① 学習済みモデルで投稿内容を判定
         result = predict_toxicity(content)
 
-        # ② 有害と判定されたら保存しない
+        # ② 有害カテゴリが検出されたら保存しない
         if result["is_toxic"]:
+            detected_categories = result["categories"]
+
+            # 検出されたカテゴリの予測確率をパーセントに変換
+            detected_category_probabilities = {
+                category: round(
+                    result["category_probabilities"][category] * 100,
+                    1
+                )
+                for category in detected_categories
+            }
+
+            # 最大のカテゴリ予測確率（従来の表示との互換用）
+            probability = round(
+                result["toxic_probability"] * 100, 1
+            )
+
             return render_template(
                 "warning.html",
-                message="不適切な表現が含まれている可能性があります。",
-                probability=round(
-                    result["toxic_probability"] * 100, 1
-                ),
+                content=content,
+                categories=detected_categories,
+                category_probabilities=detected_category_probabilities,
+                probability=probability,
                 from_edit=False
             )
 
@@ -364,17 +380,28 @@ def edit_post(post_id):
                 error="投稿内容を入力してください。"
             )
 
-        # ① 学習済みモデルで投稿内容を判定
+        # 学習済みモデルで投稿内容を判定
         result = predict_toxicity(content)
-        
-        # ② 有害と判定されたら保存しない
+
+        # 有害カテゴリが検出されたら更新しない
         if result["is_toxic"]:
+            detected_categories = result["categories"]
+
+            detected_category_probabilities = {
+                category: round(
+                    result["category_probabilities"][category] * 100,
+                    1
+                )
+                for category in detected_categories
+            }
+
+            connection.close()
+
             return render_template(
                 "warning.html",
-                message="不適切な表現が含まれている可能性があります。",
-                probability=round(
-                    result["toxic_probability"] * 100, 1
-                ),
+                content=content,
+                categories=detected_categories,
+                category_probabilities=detected_category_probabilities,
                 from_edit=True,
                 post_id=post_id
             )
