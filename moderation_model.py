@@ -7,11 +7,12 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 MODEL_DIR = (
     Path(__file__).resolve().parent
     / "models"
-    / "toxic-bert-multilabel"
+    / "toxic-bert-multiclass"
 )
 
 # 学習時と同じカテゴリ順にする
 CATEGORIES = [
+    "適切",
     "卑語",
     "差別",
     "誹謗中傷",
@@ -44,7 +45,7 @@ model.eval()
 
 
 def predict_toxicity(text: str) -> dict:
-    """投稿文を分類し、有害カテゴリと各カテゴリの予測確率を返す。"""
+    """投稿文を8クラス分類し、適切かどうかを判定する。"""
 
     inputs = tokenizer(
         text,
@@ -57,8 +58,8 @@ def predict_toxicity(text: str) -> dict:
     with torch.inference_mode():
         outputs = model(**inputs)
 
-        # マルチラベル分類ではカテゴリごとにsigmoidを適用
-        probabilities = torch.sigmoid(outputs.logits)[0]
+        # 8クラス分類なのでsoftmaxで確率に変換
+        probabilities = torch.softmax(outputs.logits, dim=-1)[0]
 
     category_probabilities = {
         category: float(probability)
@@ -68,19 +69,18 @@ def predict_toxicity(text: str) -> dict:
         )
     }
 
-    # 閾値以上のカテゴリを検出結果とする
-    detected_categories = [
-        category
-        for category, probability in category_probabilities.items()
-        if probability >= THRESHOLD
-    ]
+    # 最も確率が高いカテゴリを予測結果にする
+    predicted_index = int(torch.argmax(probabilities).item())
+    predicted_category = CATEGORIES[predicted_index]
+    predicted_probability = float(probabilities[predicted_index])
+
+    # 「適切」以外なら不適切と判定
+    is_toxic = predicted_category != "適切"
 
     return {
-        "is_toxic": len(detected_categories) > 0,
-        "categories": detected_categories,
+        "is_toxic": is_toxic,
+        "predicted_category": predicted_category,
+        "categories": [predicted_category] if is_toxic else [],
         "category_probabilities": category_probabilities,
-        # 従来の確率表示を一時的に残す場合の互換用。
-        # 7カテゴリのうち最大の予測確率であり、
-        # 「有害である確率」そのものではない。
-        "toxic_probability": max(category_probabilities.values()),
+        "toxic_probability": predicted_probability if is_toxic else 0.0,
     }
