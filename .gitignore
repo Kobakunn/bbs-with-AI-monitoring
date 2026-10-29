@@ -1,5 +1,6 @@
 .env
 __pycache__
-analysis
+analysis_pre
+logs
 models
 .ipynb_checkpoints
